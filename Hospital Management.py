@@ -6,8 +6,8 @@ import keyboard
 from prettytable import PrettyTable
 from os import system
 
-#Creating a connection to MySQL
 def create_connection():
+    '''This function is used for creating a connection to the MySQL Server'''
     try:
         connection = mysql.connector.connect(
             host='from-director.gl.at.ply.gg',
@@ -22,8 +22,8 @@ def create_connection():
         print(f"Error while connecting to MySQL: {e}")
         return None
 
-#creating Appointment query 
 def create_appointment(connection):
+    '''This function is used to create an appointment. It takes the mysql connection as an argument.'''
     cursor = connection.cursor()
     doctor_id = int(input("Enter Doctor ID assigned to the patient: "))
     patient_id = input("Enter Patient ID: ")
@@ -37,8 +37,11 @@ def create_appointment(connection):
     print("Appointment created successfully.")
 
 def insert_doctor(connection):
+    '''This function is used to add a doctor to the doctors table. It takes the mysql connection as an argument.'''
     cursor = connection.cursor()
-    doctor_id = integer_input("Enter Doctor ID: ")
+    #Fetches the number of entries in the table and as the ID auto-increments it will print the ID that is generated next.
+    cursor.execute("SELECT COUNT(*) FROM doctor;")
+    print("Your Doctor ID is: ", cursor.fetchall()[0][0]+1)
     doctor_name = input("Enter the name of the doctor: ")
     designation = input("Enter job designation: ")
     doj = input("Enter Date of Joining (YYYY-MM-DD): ")
@@ -47,14 +50,18 @@ def insert_doctor(connection):
     password=password_create("Create a password (Leave it blank to cancel creation): ")
     if password==-1:
         return -1
-    query = "INSERT INTO doctor (DoctorId, Designation, Salary, Bonus, DoctorName, DOJ, Password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(query, (doctor_id, designation, salary, bonus, doctor_name, doj, password))
+    query = "INSERT INTO doctor (Designation, Salary, Bonus, DoctorName, DOJ, Password) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(query, (designation, salary, bonus, doctor_name, doj, password))
     connection.commit()
     print("Doctor data inserted successfully.")
     sleep(3)
 
 def insert_patient(connection):
+    '''This function allows someone to sign up as a patient. It takes the mysql connection as an argument.'''
     cursor = connection.cursor()
+    #Fetches the number of entries in the table and as the ID auto-increments it will print the ID that is generated next.
+    cursor.execute("SELECT COUNT(*) FROM patient;")
+    print("Your Patient ID is: ", cursor.fetchall()[0][0]+1)
     guardid = integer_input("Enter Guardian ID: ")
     phno = input("Enter the name of the doctor: ")
     address = input("Enter your address: ")
@@ -72,7 +79,11 @@ def insert_patient(connection):
     sleep(3)
 
 def insert_guardian(connection):
+    '''This function allows someone to sign up as a guardian for a patient. It takes the mysql connection as an argument.'''
     cursor = connection.cursor()
+    #Fetches the number of entries in the table and as the ID auto-increments it will print the ID that is generated next.
+    cursor.execute("SELECT COUNT(*) FROM guardian;")
+    print("Your Guardian ID is: ", cursor.fetchall()[0][0]+1)
     phno = input("Enter the name of the doctor: ")
     emailid = input("Enter your email id: ")
     address = input("Enter your address: ")
@@ -84,12 +95,14 @@ def insert_guardian(connection):
     sleep(3)
 
 def retrieve_patient_record(connection, patientid):
+    '''This function is used to retrieve all the information on a specific patient. It takes the mysql connection and the id as arguments'''
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM patient where PatientId=%s" % patientid)
     records = cursor.fetchall()
     records = list(records[0])
     return records
 def retrieve_guardian_record(connection, guardianid):
+    '''This function is used to retrieve all the information on the guardian of a patient. It takes the mysql connection and the id as arguments.'''
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM guardian where GuardianId=%s" % guardianid)
     records = cursor.fetchall()
@@ -97,12 +110,14 @@ def retrieve_guardian_record(connection, guardianid):
     return records
 
 def retrieve_doctor_appointments(connection, doctorid):
+    '''This function is used to retrieve all the appointments made with a specific doctor. It takes the mysql connection and the doctor's ID as arguments.'''
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM Appointments where DoctorId=%s" % doctorid)
     records = cursor.fetchall()
     return records
 
 def retrieve_doctor_record(connection, doctorid):
+    '''This function is used to retrieve all the information on a specific doctor. It takes the mysql connection and the doctor's ID as arguments.'''
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM doctor where DoctorId=%s" % doctorid)
     records = cursor.fetchall()
@@ -110,6 +125,7 @@ def retrieve_doctor_record(connection, doctorid):
     return records
 
 def password_input(msg, password):
+    '''This function is used to take the input for a password. It takes the message to be shown to the user and the correct password as arguments.'''
     while True:
         print("Don't type anything to exit")
         inp=input(msg)
@@ -126,6 +142,7 @@ def password_input(msg, password):
             return inp
         
 def password_create(msg):
+    '''This function is used for the processing of creating a new password. It takes the message to be shown to the user as an argument.'''
     while True:
         print("Press enter to exit")
         inp=input(msg)
@@ -145,9 +162,11 @@ def password_create(msg):
                 print("The entered passwords don't match. Please try again")
 
 def clear_screen():
+    '''This system is used to clear the output screen'''
     system('cls')
 
 def retrieve_payments(connection,patientid):
+    '''This function is used to retrieve the payment information related to a specific patient ID. This takes the mysql connection and patient ID as arguments.'''
     cursor=connection.cursor()
     cursor.execute("Select * from Payments where PatientId=%s" % patientid)
     table=PrettyTable()
@@ -158,6 +177,7 @@ def retrieve_payments(connection,patientid):
     print(table)
 
 def update_patient(connection,attribute,patientid,typeofmsg):
+    '''This function is used to update any information of a patient's record. It takes the Mysql Connection, attribute name, patient ID, and the msg type as arguments.'''
     tempblockenter(0.5)
     cursor=connection.cursor()
     if typeofmsg=="int":
@@ -175,6 +195,7 @@ def update_patient(connection,attribute,patientid,typeofmsg):
     connection.commit()
 
 def update_doctor(connection,attribute,doctorid,typeofmsg):
+    '''This function is used to update any information of a doctor's record. It takes the Mysql Connection, attribute name, doctor ID, and the msg type as arguments.'''
     tempblockenter(0.5)
     cursor=connection.cursor()
     if typeofmsg=="int":
@@ -192,6 +213,7 @@ def update_doctor(connection,attribute,doctorid,typeofmsg):
     connection.commit()
 
 def update_appointment(connection,attribute,appid,typeofmsg):
+    '''This function is used to update any information of a appointment's record. It takes the Mysql Connection, attribute name, appointment ID, and the msg type as arguments.'''
     tempblockenter(0.5)
     cursor=connection.cursor()
     if typeofmsg=="int":
@@ -216,6 +238,7 @@ def update_appointment(connection,attribute,appid,typeofmsg):
     connection.commit()
 
 def create_menu(listformenu, beginmsg=""):
+    '''This function is used to create the menu and submenus of the program'''
     pointat=0
     updatescreen=1
     while True:
@@ -243,16 +266,19 @@ def create_menu(listformenu, beginmsg=""):
                 updatescreen=0
 
 def blockalpha():
+    '''This function is used to block the program from accepting any alphabet or special character keys. This function is called to take numeric input.'''
     charlist=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","'","\"","{","}","[","]","(",")",",",".","/","\\","~","`"]
     for item in charlist:
         keyboard.block_key(item)
 
 def unblockalpha():
+    '''This function unblocks all alphabet and special character keys after the numeric input is taken.'''
     charlist=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","'","\"","{","}","[","]","(",")",",",".","/","\\","~","`"]
     for item in charlist:
         keyboard.unblock_key(item)
 
 def integer_input(msg):
+    '''This function is used to take a numeric input. It does not accept decimals.'''
     blockalpha()
     while True:
         inp=input(msg)
@@ -265,6 +291,7 @@ def integer_input(msg):
     return inp
 
 def float_input(msg):
+    '''This function is used to take a numeric input. It does accept decimals.'''
     blockalpha()
     keyboard.unblock_key(".")
     while True:
@@ -278,32 +305,38 @@ def float_input(msg):
     return inp
 
 def tempblockenter(time=0.3):
+    '''This function is used to block the enter key for a certain amount of time.'''
     keyboard.block_key("enter")
     sleep(time)
     keyboard.unblock_key("enter")
 
 def viewallappointment(connection):
+    '''This function is used to view all appointments and it takes the mysql connection as an argument.'''
     cursor=connection.cursor()
     cursor.execute("Select * from Appointments;")
     records=cursor.fetchall()
     return records
 
 def deleteappointment(connection, appid):
+    '''This function is used to delete an appointment using it's appointment id. It takes the mysql connection and appointment id as arguments.'''
     cursor=connection.cursor()
     cursor.execute("Delete from Appointments where AppointmentId=%s;" % appid)
     cursor.commit()
 
 def deletedoctor(connection, docid):
+    '''This function is used to delete the records of a doctor. It takes the mysql connection and doctor id as arguments.'''
     cursor=connection.cursor()
     cursor.execute("Delete from doctor where DoctorId=%s;" % docid)
     cursor.commit()
 
 def deletepatient(connection, patid):
+    '''This function is used to delete the records of a patient. It takes the mysql connection and patient id as arguments.'''
     cursor=connection.cursor()
     cursor.execute("Delete from patient where PatientId=%s;" % patid)
     cursor.commit()
     
 def deleteguardian(connection, guid):
+    '''This function is used to delete the records of a guardian. It takes the mysql connection and guardian id as arguments.'''
     cursor=connection.cursor()
     cursor.execute("Delete from guardian where GuardianId=%s;" % guid)
     cursor.commit()
@@ -312,7 +345,6 @@ while True:
     connection = create_connection()
     if connection is None:
         print("Failed to create connection to the database.")
-
         print("The program will automatically close in 5 seconds...")
         sleep(5)
         exit()
