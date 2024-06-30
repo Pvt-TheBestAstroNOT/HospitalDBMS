@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "C:\\Users\\pc\\source\\repos\\Pvt-TheBestAstroNOT\\HospitalDBMS\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\pc\\source\\repos\\Pvt-TheBestAstroNOT\\HospitalDBMS\\Main.py||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Main.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\pc\\source\\repos\\Pvt-TheBestAstroNOT\\HospitalDBMS\\Hospital Management.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Hospital Management.py||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
   "DocumentGroupContainers": [
@@ -19,14 +19,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Main.py",
-              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Pvt-TheBestAstroNOT\\HospitalDBMS\\Main.py",
-              "RelativeDocumentMoniker": "Main.py",
-              "ToolTip": "C:\\Users\\pc\\source\\repos\\Pvt-TheBestAstroNOT\\HospitalDBMS\\Main.py",
-              "RelativeToolTip": "Main.py",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Title": "Hospital Management.py",
+              "DocumentMoniker": "C:\\Users\\pc\\source\\repos\\Pvt-TheBestAstroNOT\\HospitalDBMS\\Hospital Management.py",
+              "RelativeDocumentMoniker": "Hospital Management.py",
+              "ToolTip": "C:\\Users\\pc\\source\\repos\\Pvt-TheBestAstroNOT\\HospitalDBMS\\Hospital Management.py",
+              "RelativeToolTip": "Hospital Management.py",
+              "ViewState": "AQIAABcBAAAAAAAAAAAowC0BAAAxAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-05-30T12:44:47.997Z",
+              "WhenOpened": "2024-06-30T10:53:03.878Z",
               "EditorCaption": ""
             }
           ]

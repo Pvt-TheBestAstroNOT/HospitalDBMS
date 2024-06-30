@@ -1,10 +1,12 @@
 import mysql.connector
 from mysql.connector import Error
+import mysql.connector          
 from time import sleep
 import keyboard
 from prettytable import PrettyTable
 from os import system
 
+#Creating a connection to MySQL
 def create_connection():
     try:
         connection = mysql.connector.connect(
@@ -20,6 +22,7 @@ def create_connection():
         print(f"Error while connecting to MySQL: {e}")
         return None
 
+#creating Appointment query 
 def create_appointment(connection):
     cursor = connection.cursor()
     doctor_id = int(input("Enter Doctor ID assigned to the patient: "))
@@ -84,6 +87,12 @@ def insert_guardian(connection):
 def retrieve_patient_record(connection, patientid):
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM patient where PatientId=%s" % patientid)
+    records = cursor.fetchall()
+    records = list(records[0])
+    return records
+def retrieve_guardian_record(connection, guardianid):
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM guardian where GuardianId=%s" % guardianid)
     records = cursor.fetchall()
     records = list(records[0])
     return records
@@ -294,6 +303,11 @@ def deletepatient(connection, patid):
     cursor=connection.cursor()
     cursor.execute("Delete from patient where PatientId=%s;" % patid)
     cursor.commit()
+    
+def deleteguardian(connection, guid):
+    cursor=connection.cursor()
+    cursor.execute("Delete from guardian where GuardianId=%s;" % guid)
+    cursor.commit()
 
 while True:
     connection = create_connection()
@@ -467,7 +481,7 @@ while True:
                 password=input("Enter the admin password: ")
                 if password=='admin':
                     while True:
-                        match create_menu(["Delete a Patient Record", "Delete a Doctor Record", "Edit a Doctor Record", "LogOut"]):
+                        match create_menu(["Delete a Patient Record","Delete A Guardian Record", "Delete a Doctor Record", "Edit a Doctor Record", "LogOut"]):
                             case 1:
                                 patientid=integer_input("Enter patient ID to delete: ")
                                 record=retrieve_patient_record(connection, patientid)
@@ -477,6 +491,14 @@ while True:
                                     continue
                                 deletepatient(connection,patientid)
                             case 2:
+                                guardianid=integer_input("Enter guardian ID to delete: ")
+                                record=retrieve_guardian_record(connection, guardianid)
+                                if record==[]:
+                                    print("The guardianid specified does not exist... please try again")
+                                    sleep(3)
+                                    continue
+                                deleteguardian(connection,guardianid)
+                            case 3:
                                 doctorid=integer_input("Enter doctor ID to delete: ")
                                 record=retrieve_patient_record(connection, doctorid)
                                 if record==[]:
@@ -484,7 +506,7 @@ while True:
                                     sleep(3)
                                     continue
                                 deletedoctor(connection,doctorid)
-                            case 3:
+                            case 4:
                                 doctorid=integer_input("Enter doctor ID to edit: ")
                                 record=retrieve_patient_record(connection, doctorid)
                                 if record==[]:
@@ -502,7 +524,7 @@ while True:
                                         update_doctor(connection,"Department",doctorid,"text")
                                     case 5:
                                         pass
-                            case 4:
+                            case 5:
                                 print("Logging Out...")
                                 sleep(3)
                                 break
