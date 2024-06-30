@@ -47,9 +47,8 @@ def insert_doctor(connection):
     password=password_create("Create a password (Leave it blank to cancel creation): ")
     if password==-1:
         return -1
-    name=input("Enter your full name: ")
-    query = "INSERT INTO doctor (DoctorId, Designation, Salary, Bonus, DoctorName, DOJ, Password, Name) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-    cursor.execute(query, (doctor_id, designation, salary, salary, bonus, doctor_name, doj, password, name))
+    query = "INSERT INTO doctor (DoctorId, Designation, Salary, Bonus, DoctorName, DOJ, Password) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+    cursor.execute(query, (doctor_id, designation, salary, bonus, doctor_name, doj, password))
     connection.commit()
     print("Doctor data inserted successfully.")
     sleep(3)
@@ -397,10 +396,10 @@ while True:
                 while True:
                     match create_menu(["View your Account", "Edit your Account", "View your appointments", "View Patient Records", "LogOut"],"Select an Option:"):
                         case 1:
-                            record=viewallappointment(connection)
+                            record=retrieve_doctor_record(connection)
                             table = PrettyTable()
-                            table.field_names = ["Doctor ID", "Designation", "Salary", "Department", "Bonus", "Doctor Name", "DOJ", "Password", "Name"]
-                            table.add_row([record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[7],record[8]])
+                            table.field_names = ["Doctor ID", "Designation", "Salary", "Department", "Bonus", "Doctor Name", "DOJ", "Password"]
+                            table.add_row([record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[7]])
                             print(table)
                             print("Press ESC to continue...")
                             keyboard.wait("Esc")
@@ -409,7 +408,7 @@ while True:
                                 case 1:
                                     update_doctor(connection,"Password",doctorid,"password")
                                 case 2:
-                                    update_doctor(connection,"Name",doctorid,"text")
+                                    update_doctor(connection,"DoctorName",doctorid,"text")
                                 case 3:
                                     pass
                         case 3:
@@ -445,6 +444,7 @@ while True:
 
                         match create_menu(["View All Appointments", "Create an Appointment", "Edit an Appointment", "Delete an Appointment", "LogOut"],"Select an option:"):
                             case 1:
+                                viewallappointment(connection)
                                 table = PrettyTable()
                                 table.field_names = ["Appointment ID", "Doctor ID", "Patient ID", "Patient Report", "Payment ID", "Date", "Time"]
                                 table.add_row([record[6],record[0],record[1],record[2],record[3],record[4],record[5]])
