@@ -3,6 +3,7 @@ from mysql.connector import Error
 from time import sleep
 import keyboard
 from prettytable import PrettyTable
+from os import system
 
 def create_connection():
     try:
@@ -136,7 +137,7 @@ def password_create(msg):
                 print("The entered passwords don't match. Please try again")
 
 def clear_screen():
-    print("\n" * 100)
+    system('cls')
 
 def retrieve_payments(connection,patientid):
     cursor=connection.cursor()
