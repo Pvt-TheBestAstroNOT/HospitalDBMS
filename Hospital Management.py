@@ -428,7 +428,7 @@ while True:
                 while True:
                     match create_menu(["View your Account", "Edit your Account", "View your appointments", "View Patient Records", "LogOut"],"Select an Option:"):
                         case 1:
-                            record=retrieve_doctor_record(connection)
+                            record=retrieve_doctor_record(connection,doctorid)
                             table = PrettyTable()
                             table.field_names = ["Doctor ID", "Designation", "Salary", "Department", "Bonus", "Doctor Name", "DOJ", "Password"]
                             table.add_row([record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[7]])
@@ -446,7 +446,7 @@ while True:
                         case 3:
                             records=retrieve_doctor_appointments(connection,doctorid)
                             table=PrettyTable()
-                            table.field_names=["Doctor ID","Patient ID","Report Of Patient","PaymentID","Date","Time"]
+                            table.field_names=["Doctor ID","Patient ID","Report Of Patient","PaymentID","Date","Time","Appointment ID"]
                             for item in records:
                                 table.add_row(item)
                             print(table)
