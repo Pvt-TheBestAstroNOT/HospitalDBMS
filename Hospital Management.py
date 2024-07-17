@@ -1,6 +1,5 @@
 import mysql.connector
-from mysql.connector import Error
-import mysql.connector          
+from mysql.connector import Error        
 from time import sleep
 import keyboard
 from prettytable import PrettyTable
