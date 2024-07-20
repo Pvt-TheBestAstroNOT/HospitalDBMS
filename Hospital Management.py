@@ -258,7 +258,7 @@ def update_patient(connection,attribute,patientid,typeofmsg):
         attribute (string): name of the equivalent MySQL schema attribute
         patientid (integer): The Unique Identification Number of the patient
         typeofmsg (string): the data type of the message
-    '''    ''''''
+    '''   
     tempblockenter(0.5)
     cursor=connection.cursor()
     if typeofmsg=="int":
@@ -283,7 +283,7 @@ def update_doctor(connection,attribute,doctorid,typeofmsg):
         attribute (string): name of the equivalent MySQL schema attribute
         doctorid (integer): The Unique Identification Number given to a Doctor
         typeofmsg (_type_): _description_
-    '''    ''''''
+    '''   
     tempblockenter(0.5)
     cursor=connection.cursor()
     if typeofmsg=="int":
