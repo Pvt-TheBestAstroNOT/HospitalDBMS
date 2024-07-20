@@ -336,7 +336,7 @@ def create_menu(listformenu, beginmsg=""):
     '''This function is used to create the menu and submenus of the program
 
     Args:
-        listformenu (_type_): The printed value of the Menu that the client will see
+        listformenu (list): The printed value of the Menu that the client will see
         beginmsg (str, optional): the message shown at the start of the program. Defaults to "".
     '''    
     pointat=0
