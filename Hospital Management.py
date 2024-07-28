@@ -439,8 +439,8 @@ def viewallappointment(connection):
 	'''    ''''''
 	cursor=connection.cursor()
 	cursor.execute("Select * from Appointments;")
-	records=cursor.fetchall()
-	return records
+	record=cursor.fetchall()
+	return record
 
 def deleteappointment(connection, appid):
 	'''This function is used to delete an appointment using it's appointment id. It takes the mysql connection and appointment id as arguments.
@@ -617,16 +617,20 @@ while True:
 			case 4:
 				password=input("Enter the reception password: ")
 				if password=='reception':
+					tempblockenter()
 					while True:
 
 						match create_menu(["View All Appointments", "Create an Appointment", "Edit an Appointment", "Delete an Appointment", "LogOut"],"Select an option:"):
 							case 1:
-								viewallappointment(connection)
+								record= viewallappointment(connection)
 								table = PrettyTable()
 								table.field_names = ["Appointment ID", "Doctor ID", "Patient ID", "Patient Report", "Payment ID", "Date", "Time"]
-								table.add_row([record[6],record[0],record[1],record[2],record[3],record[4],record[5]])
+								for i in range(len(record)):
+
+									table.add_row([record[i][6],record[i][0],record[i][1],record[i][2],record[i][3],record[i][4],record[i][5]])
 								print(table)
 								print("Press ESC to continue...")
+								sleep(1)
 								keyboard.wait("Esc")
 							case 2:
 								create_appointment(connection)
