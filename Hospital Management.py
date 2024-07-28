@@ -657,6 +657,7 @@ while True:
 			case 5:
 				password=input("Enter the admin password: ")
 				if password=='admin':
+					tempblockenter()
 					while True:
 						match create_menu(["Delete a Patient Record","Delete A Guardian Record", "Delete a Doctor Record", "Edit a Doctor Record", "LogOut"]):
 							case 1:
