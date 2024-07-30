@@ -34,7 +34,7 @@ def create_appointment(connection):
 	payment = input("Enter Payment ID: ")
 	date=input("Enter the Date for the appointment: ")
 	time=input("Enter the time for the appointment: ")
-	query = "INSERT INTO department (DoctorId, PatientId, ReportOfPatient, PaymentId, Date, Time) VALUES (%s, %s, %s, %s, %s, %s)"
+	query = "INSERT INTO Appointment (DoctorId, PatientId, ReportOfPatient, PaymentId, Date, Time) VALUES (%s, %s, %s, %s, %s, %s)"
 	cursor.execute(query, (doctor_id, patient_id, report, payment, date, time))
 	connection.commit()
 	print("Appointment created successfully.")
