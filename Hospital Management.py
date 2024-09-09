@@ -128,6 +128,7 @@ def retrieve_patient_record(connection, patientid):
 	cursor = connection.cursor()
 	cursor.execute("SELECT * FROM patient where PatientId=%s" % patientid)
 	records = cursor.fetchall()
+	print(records)
 	records = list(records[0])
 	return records
 def retrieve_guardian_record(connection, guardianid):
@@ -462,7 +463,7 @@ def deletedoctor(connection, docid):
 	'''    
 	cursor=connection.cursor()
 	cursor.execute("Delete from doctor where DoctorId=%s;" % docid)
-	cursor.commit()
+	connection.commit()
 
 def deletepatient(connection, patid):
 	'''_summary_
@@ -682,12 +683,13 @@ while True:
 								deleteguardian(connection,guardianid)
 							case 3:
 								doctorid=integer_input("Enter doctor ID to delete: ")
-								record=retrieve_patient_record(connection, doctorid)
+								record=retrieve_doctor_record(connection, doctorid)
 								if record==[]:
-									print("The doctorid specified does not exist please try again")
+									print("The doctorid specified does not exist. please check the credentials and try again.")
 									sleep(3)
 									continue
-								deletedoctor(connection,doctorid)
+								else:
+									deletedoctor(connection,doctorid)
 							case 4:
 								doctorid=integer_input("Enter doctor ID to edit: ")
 								record=retrieve_patient_record(connection, doctorid)
