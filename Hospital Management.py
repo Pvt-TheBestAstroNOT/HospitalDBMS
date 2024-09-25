@@ -32,9 +32,9 @@ def create_appointment(connection):
 	patient_id = input("Enter Patient ID: ")
 	report = input("Enter Report: ")
 	payment = input("Enter Payment ID: ")
-	date=input("Enter the Date for the appointment: ")
+	date=dateinput("Enter the Date for the appointment: ")
 	time=input("Enter the time for the appointment: ")
-	query = "INSERT INTO Appointment (DoctorId, PatientId, ReportOfPatient, PaymentId, Date, Time) VALUES (%s, %s, %s, %s, %s, %s)"
+	query = "INSERT INTO Appointments (DoctorId, PatientId, ReportOfPatient, PaymentId, Date, Time) VALUES (%s, %s, %s, %s, %s, %s)"
 	cursor.execute(query, (doctor_id, patient_id, report, payment, date, time))
 	connection.commit()
 	print("Appointment created successfully.")
@@ -54,7 +54,7 @@ def insert_doctor(connection):
 	print("Your Doctor ID is: ", cursor.fetchall()[0][0]+1)
 	doctor_name = input("Enter the name of the doctor: ")
 	designation = input("Enter job designation: ")
-	doj = input("Enter Date of Joining (YYYY-MM-DD): ")
+	doj = dateinput("Enter Date of Joining:")
 	salary=0
 	bonus=0
 	password=password_create("Create a password (Leave it blank to cancel creation): ")
@@ -82,7 +82,7 @@ def insert_patient(connection):
 	guardid = integer_input("Enter Guardian ID: ")
 	phno = input("Enter the name of the doctor: ")
 	address = input("Enter your address: ")
-	dob = input("Enter your Date of Birth (YYYY-MM-DD): ")
+	dob = dateinput("Enter your Date of Birth:")
 	weight=float_input("Enter your Weight in KG: ")
 	height=float_input("Enter your height in CM: ")
 	password=password_create("Create a password (Leave it blank to cancel creation): ")
@@ -378,6 +378,7 @@ def unblockalpha():
 	'''    
 	charlist=["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","'","\"","{","}","[","]","(",")",",",".","/","\\","~","`"]
 	for item in charlist:
+
 		keyboard.unblock_key(item)
 
 def integer_input(msg):
@@ -482,10 +483,20 @@ def deleteguardian(connection, guid):
 	Args:
 		connection: mysql.connector.connect
 		guid (integer): the Unique Identification Number of the record to be deleted
+
 	'''    ''''''
 	cursor=connection.cursor()
 	cursor.execute("Delete from guardian where GuardianId=%s;" % guid)
 	cursor.commit()
+
+def dateinput(string):            #the string is the personalised message you would want to show the user
+	print(string)
+	YYYY=(input("Enter the year: (YYYY)"))
+	MM=(input("Enter the month(MM): "))
+	DD=(input("enter the day:(DD) "))
+	return (YYYY+'-'+MM+'-'+DD)
+
+
 
 while True:
 	connection = create_connection()
@@ -625,7 +636,7 @@ while True:
 							case 1:
 								record= viewallappointment(connection)
 								table = PrettyTable()
-								table.field_names = ["Appointment ID", "Doctor ID", "Patient ID", "Patient Report", "Payment ID", "Date", "Time"]
+								table.field_names = ["Time", "Appointment ID", "Doctor ID", "Patient ID", "Patient Report", "Payment ID", "Date"]
 								for i in range(len(record)):
 
 									table.add_row([record[i][6],record[i][0],record[i][1],record[i][2],record[i][3],record[i][4],record[i][5]])
