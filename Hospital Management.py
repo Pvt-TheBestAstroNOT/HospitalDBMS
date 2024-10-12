@@ -17,7 +17,7 @@ def install_and_import(package):
         system('cls')
 
 def installAllRequiredPackages():
-    packages = ["PrettyTable", "keyboard", "mysql.connector"]
+    packages = ["PrettyTable", "keyboard", "mysql-connector-python"]
     for package in packages:
         install_and_import(package)
     print("All required packages have been installed. The program will soft-restart now.")
