@@ -1,9 +1,46 @@
-import mysql.connector
-from mysql.connector import Error        
-from time import sleep
-import keyboard
-from prettytable import PrettyTable
+import subprocess
+import sys
+import importlib
 from os import system
+from time import sleep
+
+def install_and_import(package):
+    try:
+        # Try to import the package
+        importlib.import_module(package)
+    except ImportError:
+        # If package is not installed, install it
+        print(f"'{package}' not found. Installing...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        print(f"'{package}' has been installed.")
+        sleep(3)
+        system('cls')
+
+def installAllRequiredPackages():
+    packages = ["PrettyTable", "keyboard", "mysql.connector"]
+    for package in packages:
+        install_and_import(package)
+    print("All required packages have been installed. The program will soft-restart now.")
+    sleep(3)
+    system('cls')
+
+def InitExternalModules():
+    system('cls')
+    print("Verifying package installation")
+    sleep(2)
+    try:
+        global mysql
+        global keyboard
+        global PrettyTable
+        import mysql.connector    
+        import keyboard
+        from prettytable import PrettyTable
+        system('cls')
+        print("Initialising the program")
+        sleep(2)
+    except ImportError:
+        installAllRequiredPackages()
+        InitExternalModules()
 
 def create_connection():
 	"""This function is used for creating a connection to the MySQL Server
@@ -13,15 +50,15 @@ def create_connection():
 	"""
 	try:
 		connection = mysql.connector.connect(
-			host='from-director.gl.at.ply.gg',
-			port='36481',
+			host='localhost',
+			port='3306',
 			database='HospitalManagement',
 			user='pythonconnection',
 			password='pythonconnection'
 		)
 		if connection.is_connected():
 			return connection
-	except Error as e:
+	except mysql.connector.Error as e:
 		print(f"Error while connecting to MySQL: {e}")
 		return None
 
@@ -128,9 +165,9 @@ def retrieve_patient_record(connection, patientid):
 	cursor = connection.cursor()
 	cursor.execute("SELECT * FROM patient where PatientId=%s" % patientid)
 	records = cursor.fetchall()
-	print(records)
 	records = list(records[0])
 	return records
+
 def retrieve_guardian_record(connection, guardianid):
 	'''This function is used to retrieve all the information on the guardian of a patient. It takes the mysql connection and the id as arguments.
 
@@ -271,6 +308,9 @@ def update_patient(connection,attribute,patientid,typeofmsg):
 	elif typeofmsg=="text":
 		inp=input("Please enter the new value: ")
 		cursor.execute("Update patient set %s='%s' where PatientId=%s" % (attribute,inp,patientid))
+	elif typeofmsg=="date":
+		inp=dateinput("Please enter the new value: ")
+		cursor.execute("Update patient set %s='%s' where PatientId=%s" % (attribute,inp,patientid))
 	elif typeofmsg=="password":
 		inp=password_create("Please enter the new password: ")
 		cursor.execute("Update patient set %s='%s' where PatientId=%s" % (attribute,inp,patientid))
@@ -340,6 +380,7 @@ def create_menu(listformenu, beginmsg=""):
 		listformenu (list): The printed value of the Menu that the client will see
 		beginmsg (str, optional): the message shown at the start of the program. Defaults to "".
 	'''    
+	clearPersonalInfo()
 	pointat=0
 	updatescreen=1
 	while True:
@@ -453,7 +494,7 @@ def deleteappointment(connection, appid):
 	''' 
 	cursor=connection.cursor()
 	cursor.execute("Delete from Appointments where AppointmentId=%s;" % appid)
-	cursor.commit()
+	connection.commit()
 
 def deletedoctor(connection, docid):
 	'''_summary_
@@ -463,6 +504,7 @@ def deletedoctor(connection, docid):
 		docid (integer): the doctor ID for the record to be deleted
 	'''    
 	cursor=connection.cursor()
+	cursor.execute("Delete from appointments where DoctorId=%s;" % docid)
 	cursor.execute("Delete from doctor where DoctorId=%s;" % docid)
 	connection.commit()
 
@@ -474,8 +516,11 @@ def deletepatient(connection, patid):
 		patid (integer): The Unique Identification Number of the record to be deleted
 	''' 
 	cursor=connection.cursor()
+	cursor.execute("Delete from appointments where PatientId=%s;" % patid)
+	cursor.execute("UPDATE payments SET patientid = NULL WHERE PatientId=%s;" % patid)
+	cursor.execute("Delete from rooms where PatientId=%s;" % patid)
 	cursor.execute("Delete from patient where PatientId=%s;" % patid)
-	cursor.commit()
+	connection.commit()
 	
 def deleteguardian(connection, guid):
 	'''This function is used to delete the records of a guardian. It takes the mysql connection and guardian id as arguments.
@@ -486,244 +531,248 @@ def deleteguardian(connection, guid):
 
 	'''    ''''''
 	cursor=connection.cursor()
+	cursor.execute("UPDATE patient SET patientid = NULL WHERE GuardianId=%s;" % guid)
 	cursor.execute("Delete from guardian where GuardianId=%s;" % guid)
-	cursor.commit()
+	connection.commit()
 
 def dateinput(string):            #the string is the personalised message you would want to show the user
 	print(string)
-	YYYY=(input("Enter the year: (YYYY)"))
+	YYYY=(input("Enter the year (YYYY): "))
 	MM=(input("Enter the month(MM): "))
 	DD=(input("enter the day:(DD) "))
 	return (YYYY+'-'+MM+'-'+DD)
 
+def clearPersonalInfo():
+    password=""
 
-
+InitExternalModules()
+connection = create_connection()
+if connection is None:
+	print("Failed to create connection to the database.")
+	print("The program will automatically close in 5 seconds...")
+	sleep(5)
+	exit()
 while True:
-	connection = create_connection()
-	if connection is None:
-		print("Failed to create connection to the database.")
-		print("The program will automatically close in 5 seconds...")
-		sleep(5)
-		exit()
-	else:
-		match create_menu([ "Sign Up", "Login as Patient", "Login as Doctor", "Login as Receptionist", "Login as HR", "Exit the Program"], "Use the Up and Down arrow keys to navigate the menu and enter key to select an option:"):
-			case 1:
-				match create_menu(["Create a Patient Account", "Create a Guardian Account", "Create a doctor Account", "Cancel"], "Select an option:"):
+	clearPersonalInfo()
+	match create_menu([ "Sign Up", "Login as Patient", "Login as Doctor", "Login as Receptionist", "Login as HR", "Exit the Program"], "Use the Up and Down arrow keys to navigate the menu and enter key to select an option:"):
+		case 1:
+			match create_menu(["Create a Patient Account", "Create a Guardian Account", "Create a doctor Account", "Cancel"], "Select an option:"):
+				case 1:
+					insert_patient(connection)
+				case 2:
+					insert_guardian(connection)
+				case 3:
+					password=input("Enter the password given to you by the admin/recruiter: ")
+					if password=="doc":
+						insert_doctor(connection)
+					else:
+						print("Wrong password please try again")
+						sleep(3)
+				case 4:
+					pass
+		case 2:
+			tempblockenter(0.5)
+			patientid=integer_input("Enter your patient ID: ")
+			record=retrieve_patient_record(connection, patientid)
+			if record==[]:
+				print("The patientid specified does not exist please try again")
+				sleep(3)
+				continue
+			tempblockenter(0.5)
+			if password_input("Enter your password: ", record[8])==-1:
+				continue
+			while True:
+				tempblockenter(0.5)
+				match create_menu(["View Your Account", "Edit Your Account", "View Payment Records", "LogOut"], "Select an Option:"):
 					case 1:
-						insert_patient(connection)
+						record=retrieve_patient_record(connection, patientid)
+						table = PrettyTable()
+						table.field_names = ["Patient ID", "Guardian ID", "Phone No", "Address", "DOB", "Weight", "Height", "RoomNo", "Password", "Name"]
+						table.add_row([record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[7],record[8],record[9]])
+						print(table)
+						print("Press ESC to continue...")
+						keyboard.wait("Esc")
 					case 2:
-						insert_guardian(connection)
+						match create_menu(["Guardian ID","Phone No","Address","DOB","Weight","Height","Password","Name", "Cancel"],"Select what you want to edit:"):
+							case 1:
+								update_patient(connection,"GuardianId",patientid,"int")
+							case 2:
+								update_patient(connection,"Phno",patientid,"int")
+							case 3:
+								update_patient(connection,"Address",patientid,"text")
+							case 4:
+								update_patient(connection,"DOB",patientid,"date")
+							case 5:
+								update_patient(connection,"Weight",patientid,"float")
+							case 6:
+								update_patient(connection,"Height",patientid,"float")
+							case 7:
+								update_patient(connection,"password",patientid,"password")
+							case 8:
+								update_patient(connection,"Name",patientid,"text")
+							case 9:
+								pass
 					case 3:
-						password=input("Enter the password given to you by the admin/recruiter: ")
-						if password=="doc":
-							insert_doctor(connection)
-						else:
-							print("Wrong password please try again")
-							sleep(3)
+						retrieve_payments(connection,patientid)
+						print("Press ESC to continue...")
+						keyboard.wait("Esc")
 					case 4:
-						pass
-			case 2:
-				tempblockenter(0.5)
-				patientid=integer_input("Enter your patient ID: ")
-				record=retrieve_patient_record(connection, patientid)
-				if record==[]:
-					print("The patientid specified does not exist please try again")
-					sleep(3)
-					continue
-				tempblockenter(0.5)
-				if password_input("Enter your password: ", record[8])==-1:
-					continue
+						print("Logging out")
+						sleep(2)
+						break
+		case 3:
+			tempblockenter(0.5)
+			doctorid=integer_input("Enter your doctor ID: ")
+			record=retrieve_doctor_record(connection, doctorid)
+			if record==[]:
+				print("The patientid specified does not exist please try again")
+				continue
+			tempblockenter(0.5)
+			if password_input("Enter your password: ", record[7])==-1:
+				continue
+			tempblockenter(0.5)
+			while True:
+				match create_menu(["View your Account", "Edit your Account", "View your appointments", "View Patient Records", "LogOut"],"Select an Option:"):
+					case 1:
+						record=retrieve_doctor_record(connection,doctorid)
+						table = PrettyTable()
+						table.field_names = ["Doctor ID", "Designation", "Salary", "Department", "Bonus", "Doctor Name", "DOJ", "Password"]
+						table.add_row([record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[7]])
+						print(table)
+						print("Press ESC to continue...")
+						keyboard.wait("Esc")
+					case 2:
+						match create_menu(["Password","Name", "Cancel"],"Select what you want to edit:"):
+							case 1:
+								update_doctor(connection,"Password",doctorid,"password")
+							case 2:
+								update_doctor(connection,"DoctorName",doctorid,"text")
+							case 3:
+								pass
+					case 3:
+						records=retrieve_doctor_appointments(connection,doctorid)
+						table=PrettyTable()
+						table.field_names=["Doctor ID","Patient ID","Report Of Patient","PaymentID","Date","Time","Appointment ID"]
+						for item in records:
+							table.add_row(item)
+						print(table)
+						print("Press ESC to continue...")
+						keyboard.wait("Esc")
+					case 4:
+						patientid=integer_input("Enter the patient ID: ")
+						record=retrieve_patient_record(connection, patientid)
+						if record==[]:
+							print("The patient ID specified does not exist please try again")
+							sleep(3)
+							continue
+						table = PrettyTable()
+						table.field_names = ["Patient ID", "Guardian ID", "Phone No", "Address", "DOB", "Weight", "Height", "RoomNo", "Password", "Name"]
+						table.add_row([record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[7],record[8],record[9]])
+						print(table)
+						print("Press ESC to continue...")
+						keyboard.wait("Esc")
+					case 5:
+						print("Logging Out...")
+						sleep(3)
+						break
+		case 4:
+			password=input("Enter the reception password: ")
+			if password=='reception':
+				tempblockenter()
 				while True:
-					tempblockenter(0.5)
-					match create_menu(["View Your Account", "Edit Your Account", "View Payment Records", "LogOut"], "Select an Option:"):
+
+					match create_menu(["View All Appointments", "Create an Appointment", "Edit an Appointment", "Delete an Appointment", "LogOut"],"Select an option:"):
 						case 1:
+							record= viewallappointment(connection)
 							table = PrettyTable()
-							table.field_names = ["Patient ID", "Guardian ID", "Phone No", "Address", "DOB", "Weight", "Height", "RoomNo", "Password", "Name"]
-							table.add_row([record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[7],record[8],record[9]])
+							table.field_names = ["Time", "Appointment ID", "Doctor ID", "Patient ID", "Patient Report", "Payment ID", "Date"]
+							for i in range(len(record)):
+
+								table.add_row([record[i][6],record[i][0],record[i][1],record[i][2],record[i][3],record[i][4],record[i][5]])
 							print(table)
 							print("Press ESC to continue...")
+							sleep(1)
 							keyboard.wait("Esc")
 						case 2:
-							match create_menu(["Guardian ID","Phone No","Address","DOB","Weight","Height","Password","Name", "Cancel"],"Select what you want to edit:"):
+							create_appointment(connection)
+						case 3:
+							appid=integer_input("Enter the Appointment ID: ")
+							match create_menu(["Doctor ID", "Patient ID", "Payment ID", "Date", "Time", "Cancel"], "Select what you want to edit:"):
 								case 1:
-									update_patient(connection,"GuardianId",patientid,"int")
+									update_appointment(connection,"DoctorId",appid,"int")
 								case 2:
-									update_patient(connection,"Phno",patientid,"int")
+									update_appointment(connection,"PatientId",appid,"int")
 								case 3:
-									update_patient(connection,"Address",patientid,"text")
+									update_appointment(connection,"PaymentId",appid,"int")
 								case 4:
-									update_patient(connection,"DOB",patientid,"text")
+									update_appointment(connection,"Date",appid,"date")
 								case 5:
-									update_patient(connection,"Weight",patientid,"float")
+									update_appointment(connection,"Time",appid,"time")
 								case 6:
-									update_patient(connection,"Height",patientid,"float")
-								case 7:
-									update_patient(connection,"password",patientid,"password")
-								case 8:
-									update_patient(connection,"Name",patientid,"text")
-								case 9:
 									pass
-						case 3:
-							retrieve_payments(connection,patientid)
-							print("Press ESC to continue...")
-							keyboard.wait("Esc")
 						case 4:
-							print("Logging out")
-							sleep(2)
-							break
-			case 3:
-				tempblockenter(0.5)
-				doctorid=integer_input("Enter your doctor ID: ")
-				record=retrieve_doctor_record(connection, doctorid)
-				if record==[]:
-					print("The patientid specified does not exist please try again")
-					continue
-				tempblockenter(0.5)
-				if password_input("Enter your password: ", record[7])==-1:
-					continue
-				tempblockenter(0.5)
-				while True:
-					match create_menu(["View your Account", "Edit your Account", "View your appointments", "View Patient Records", "LogOut"],"Select an Option:"):
-						case 1:
-							record=retrieve_doctor_record(connection,doctorid)
-							table = PrettyTable()
-							table.field_names = ["Doctor ID", "Designation", "Salary", "Department", "Bonus", "Doctor Name", "DOJ", "Password"]
-							table.add_row([record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[7]])
-							print(table)
-							print("Press ESC to continue...")
-							keyboard.wait("Esc")
-						case 2:
-							match create_menu(["Password","Name", "Cancel"],"Select what you want to edit:"):
-								case 1:
-									update_doctor(connection,"Password",doctorid,"password")
-								case 2:
-									update_doctor(connection,"DoctorName",doctorid,"text")
-								case 3:
-									pass
-						case 3:
-							records=retrieve_doctor_appointments(connection,doctorid)
-							table=PrettyTable()
-							table.field_names=["Doctor ID","Patient ID","Report Of Patient","PaymentID","Date","Time","Appointment ID"]
-							for item in records:
-								table.add_row(item)
-							print(table)
-							print("Press ESC to continue...")
-							keyboard.wait("Esc")
-						case 4:
-							patientid=integer_input("Enter the patient ID: ")
-							record=retrieve_patient_record(connection, patientid)
-							if record==[]:
-								print("The patient ID specified does not exist please try again")
-								sleep(3)
-								continue
-							table = PrettyTable()
-							table.field_names = ["Patient ID", "Guardian ID", "Phone No", "Address", "DOB", "Weight", "Height", "RoomNo", "Password", "Name"]
-							table.add_row([record[0],record[1],record[2],record[3],record[4],record[5],record[6],record[7],record[8],record[9]])
-							print(table)
-							print("Press ESC to continue...")
-							keyboard.wait("Esc")
+							appid=integer_input("Enter the Appointment ID: ")
+							deleteappointment(connection,appid)
 						case 5:
 							print("Logging Out...")
 							sleep(3)
 							break
-			case 4:
-				password=input("Enter the reception password: ")
-				if password=='reception':
-					tempblockenter()
-					while True:
-
-						match create_menu(["View All Appointments", "Create an Appointment", "Edit an Appointment", "Delete an Appointment", "LogOut"],"Select an option:"):
-							case 1:
-								record= viewallappointment(connection)
-								table = PrettyTable()
-								table.field_names = ["Time", "Appointment ID", "Doctor ID", "Patient ID", "Patient Report", "Payment ID", "Date"]
-								for i in range(len(record)):
-
-									table.add_row([record[i][6],record[i][0],record[i][1],record[i][2],record[i][3],record[i][4],record[i][5]])
-								print(table)
-								print("Press ESC to continue...")
-								sleep(1)
-								keyboard.wait("Esc")
-							case 2:
-								create_appointment(connection)
-							case 3:
-								appid=integer_input("Enter the Appointment ID: ")
-								match create_menu(["Doctor ID", "Patient ID", "Payment ID", "Date", "Time", "Cancel"], "Select what you want to edit:"):
-									case 1:
-										update_appointment(connection,"DoctorId",appid,"int")
-									case 2:
-										update_appointment(connection,"PatientId",appid,"int")
-									case 3:
-										update_appointment(connection,"PaymentId",appid,"int")
-									case 4:
-										update_appointment(connection,"Date",appid,"date")
-									case 5:
-										update_appointment(connection,"Time",appid,"time")
-									case 6:
-										pass
-							case 4:
-								appid=integer_input("Enter the Appointment ID: ")
-								deleteappointment(connection,appid)
-							case 5:
-								print("Logging Out...")
+			else:
+				continue
+		case 5:
+			password=input("Enter the admin password: ")
+			if password=='admin':
+				tempblockenter()
+				while True:
+					match create_menu(["Delete a Patient Record","Delete A Guardian Record", "Delete a Doctor Record", "Edit a Doctor Record", "LogOut"]):
+						case 1:
+							patientid=integer_input("Enter patient ID to delete: ")
+							record=retrieve_patient_record(connection, patientid)
+							if record==[]:
+								print("The patientid specified does not exist please try again")
 								sleep(3)
-								break
-				else:
-					continue
-			case 5:
-				password=input("Enter the admin password: ")
-				if password=='admin':
-					tempblockenter()
-					while True:
-						match create_menu(["Delete a Patient Record","Delete A Guardian Record", "Delete a Doctor Record", "Edit a Doctor Record", "LogOut"]):
-							case 1:
-								patientid=integer_input("Enter patient ID to delete: ")
-								record=retrieve_patient_record(connection, patientid)
-								if record==[]:
-									print("The patientid specified does not exist please try again")
-									sleep(3)
-									continue
-								deletepatient(connection,patientid)
-							case 2:
-								guardianid=integer_input("Enter guardian ID to delete: ")
-								record=retrieve_guardian_record(connection, guardianid)
-								if record==[]:
-									print("The guardianid specified does not exist... please try again")
-									sleep(3)
-									continue
-								deleteguardian(connection,guardianid)
-							case 3:
-								doctorid=integer_input("Enter doctor ID to delete: ")
-								record=retrieve_doctor_record(connection, doctorid)
-								if record==[]:
-									print("The doctorid specified does not exist. please check the credentials and try again.")
-									sleep(3)
-									continue
-								else:
-									deletedoctor(connection,doctorid)
-							case 4:
-								doctorid=integer_input("Enter doctor ID to edit: ")
-								record=retrieve_patient_record(connection, doctorid)
-								if record==[]:
-									print("The doctorid specified does not exist please try again")
-									sleep(3)
-									continue
-								match create_menu(["Designation","Salary","Bonus","Department", "Cancel"],"Select an option to edit:"):
-									case 1:
-										update_doctor(connection,"Designation",doctorid,"text")
-									case 2:
-										update_doctor(connection,"Salary",doctorid,"float")
-									case 3:
-										update_doctor(connection,"Bonus",doctorid,"float")
-									case 4:
-										update_doctor(connection,"Department",doctorid,"text")
-									case 5:
-										pass
-							case 5:
-								print("Logging Out...")
+								continue
+							deletepatient(connection,patientid)
+						case 2:
+							guardianid=integer_input("Enter guardian ID to delete: ")
+							record=retrieve_guardian_record(connection, guardianid)
+							if record==[]:
+								print("The guardianid specified does not exist... please try again")
 								sleep(3)
-								break
-			case 6:
-				print("Closing the program. Thank you for using the Hospital Database Managment System")
-				sleep(3)
-				exit()
+								continue
+							deleteguardian(connection,guardianid)
+						case 3:
+							doctorid=integer_input("Enter doctor ID to delete: ")
+							record=retrieve_doctor_record(connection, doctorid)
+							if record==[]:
+								print("The doctorid specified does not exist. please check the credentials and try again.")
+								sleep(3)
+								continue
+							else:
+								deletedoctor(connection,doctorid)
+						case 4:
+							doctorid=integer_input("Enter doctor ID to edit: ")
+							record=retrieve_patient_record(connection, doctorid)
+							if record==[]:
+								print("The doctorid specified does not exist please try again")
+								sleep(3)
+								continue
+							match create_menu(["Designation","Salary","Bonus","Department", "Cancel"],"Select an option to edit:"):
+								case 1:
+									update_doctor(connection,"Designation",doctorid,"text")
+								case 2:
+									update_doctor(connection,"Salary",doctorid,"float")
+								case 3:
+									update_doctor(connection,"Bonus",doctorid,"float")
+								case 4:
+									update_doctor(connection,"Department",doctorid,"text")
+								case 5:
+									pass
+						case 5:
+							print("Logging Out...")
+							sleep(3)
+							break
+		case 6:
+			print("Closing the program. Thank you for using the Hospital Database Managment System")
+			sleep(3)
+			exit()
