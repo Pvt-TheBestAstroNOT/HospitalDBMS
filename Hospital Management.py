@@ -653,6 +653,7 @@ while True:
 						print(table)
 						print("Press ESC to continue...")
 						keyboard.wait("Esc")
+						system('cls')
 					case 4:
 						patientid=integer_input("Enter the patient ID: ")
 						record=retrieve_patient_record(connection, patientid)
@@ -688,6 +689,7 @@ while True:
 							print("Press ESC to continue...")
 							sleep(1)
 							keyboard.wait("Esc")
+							system('cls')
 						case 2:
 							create_appointment(connection)
 						case 3:
