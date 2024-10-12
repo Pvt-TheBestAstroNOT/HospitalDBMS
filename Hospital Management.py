@@ -165,7 +165,10 @@ def retrieve_patient_record(connection, patientid):
 	cursor = connection.cursor()
 	cursor.execute("SELECT * FROM patient where PatientId=%s" % patientid)
 	records = cursor.fetchall()
-	records = list(records[0])
+	if(len(records)>0):
+		records = list(records[0])
+	else:
+		records=[]
 	return records
 
 def retrieve_guardian_record(connection, guardianid):
@@ -181,7 +184,10 @@ def retrieve_guardian_record(connection, guardianid):
 	cursor = connection.cursor()
 	cursor.execute("SELECT * FROM guardian where GuardianId=%s" % guardianid)
 	records = cursor.fetchall()
-	records = list(records[0])
+	if(len(records)>0):
+		records = list(records[0])
+	else:
+		records=[]
 	return records
 
 def retrieve_doctor_appointments(connection, doctorid):
@@ -212,7 +218,10 @@ def retrieve_doctor_record(connection, doctorid):
 	cursor = connection.cursor()
 	cursor.execute("SELECT * FROM doctor where DoctorId=%s" % doctorid)
 	records = cursor.fetchall()
-	records = list(records[0])
+	if(len(records)>0):
+		records = list(records[0])
+	else:
+		records=[]
 	return records
 
 def password_input(msg, password):
