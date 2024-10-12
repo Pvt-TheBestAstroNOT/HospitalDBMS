@@ -380,7 +380,6 @@ def create_menu(listformenu, beginmsg=""):
 		listformenu (list): The printed value of the Menu that the client will see
 		beginmsg (str, optional): the message shown at the start of the program. Defaults to "".
 	'''    
-	clearPersonalInfo()
 	pointat=0
 	updatescreen=1
 	while True:
@@ -542,9 +541,6 @@ def dateinput(string):            #the string is the personalised message you wo
 	DD=(input("enter the day:(DD) "))
 	return (YYYY+'-'+MM+'-'+DD)
 
-def clearPersonalInfo():
-    password=""
-
 InitExternalModules()
 connection = create_connection()
 if connection is None:
@@ -553,7 +549,6 @@ if connection is None:
 	sleep(5)
 	exit()
 while True:
-	clearPersonalInfo()
 	match create_menu([ "Sign Up", "Login as Patient", "Login as Doctor", "Login as Receptionist", "Login as HR", "Exit the Program"], "Use the Up and Down arrow keys to navigate the menu and enter key to select an option:"):
 		case 1:
 			match create_menu(["Create a Patient Account", "Create a Guardian Account", "Create a doctor Account", "Cancel"], "Select an option:"):
