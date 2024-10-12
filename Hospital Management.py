@@ -368,7 +368,7 @@ def update_appointment(connection,attribute,appid,typeofmsg):
 		inp=input("Please enter the date in the format of YYYY-MM-DD: ")
 		cursor.execute("Update Appointments set %s='%s' where AppointmentId=%s;" % (attribute,inp,appid))
 	elif typeofmsg=="time":
-		inp=input("Please enter the time in the format of HH:MM: ")
+		inp=input("Please enter the time in the format of HH:MM ")
 		inp+=":00"
 		cursor.execute("Update Appointments set %s='%s' where AppointmentId=%s;" % (attribute,inp,appid))
 	connection.commit()
@@ -679,7 +679,7 @@ while True:
 
 					match create_menu(["View All Appointments", "Create an Appointment", "Edit an Appointment", "Delete an Appointment", "LogOut"],"Select an option:"):
 						case 1:
-							record= viewallappointment(connection)
+							record=viewallappointment(connection)
 							table = PrettyTable()
 							table.field_names = ["Time", "Appointment ID", "Doctor ID", "Patient ID", "Patient Report", "Payment ID", "Date"]
 							for i in range(len(record)):
@@ -693,7 +693,9 @@ while True:
 						case 2:
 							create_appointment(connection)
 						case 3:
+							tempblockenter()
 							appid=integer_input("Enter the Appointment ID: ")
+							tempblockenter()
 							match create_menu(["Doctor ID", "Patient ID", "Payment ID", "Date", "Time", "Cancel"], "Select what you want to edit:"):
 								case 1:
 									update_appointment(connection,"DoctorId",appid,"int")
