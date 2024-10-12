@@ -517,6 +517,7 @@ def deletepatient(connection, patid):
 	cursor=connection.cursor()
 	cursor.execute("Delete from appointments where PatientId=%s;" % patid)
 	cursor.execute("UPDATE payments SET patientid = NULL WHERE PatientId=%s;" % patid)
+	cursor.execute("UPDATE guardian SET patientid = NULL WHERE PatientId=%s;" % patid)
 	cursor.execute("Delete from rooms where PatientId=%s;" % patid)
 	cursor.execute("Delete from patient where PatientId=%s;" % patid)
 	connection.commit()
