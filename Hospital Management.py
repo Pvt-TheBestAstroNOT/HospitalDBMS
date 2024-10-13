@@ -22,7 +22,7 @@ def install_and_import(package):
 		system('cls')
 
 def installAllRequiredPackages():
-	'''_summary_
+	'''Intalls all the pre-requisite modules and external libraries required for the program to function smoothly
 	'''
 	packages = ["PrettyTable", "keyboard", "mysql-connector-python"]
 	for package in packages:
@@ -32,6 +32,7 @@ def installAllRequiredPackages():
 	system('cls')
 
 def InitExternalModules():
+	''' Verifies and imports all the required external libraries and installs any that are not found'''
 	system('cls')
 	print("Verifying package installation")
 	sleep(2)
