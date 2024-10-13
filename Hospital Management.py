@@ -524,36 +524,36 @@ def deletedoctor(connection, docid):
 	connection.commit()
 
 def deletepatientforeign(connection, patid):
-    cursor = connection.cursor()
+	cursor = connection.cursor()
 
-    # Delete appointments associated with the patient
-    cursor.execute("DELETE FROM appointments WHERE PatientId = %s;", (patid,))
+	# Delete appointments associated with the patient
+	cursor.execute("DELETE FROM appointments WHERE PatientId = %s;", (patid,))
 
-    # Set foreign keys to NULL where the patient ID is used
-    cursor.execute("UPDATE payments SET patientid = NULL WHERE patientid = %s;", (patid,))
-    cursor.execute("UPDATE rooms SET patientid = NULL WHERE patientid = %s;", (patid,))
-    cursor.execute("UPDATE patient SET guardianid = NULL WHERE guardianid = %s;", (patid,))
-    cursor.execute("UPDATE patient SET roomno = NULL WHERE patientid = %s;", (patid,))
-    
-    connection.commit()
+	# Set foreign keys to NULL where the patient ID is used
+	cursor.execute("UPDATE payments SET patientid = NULL WHERE patientid = %s;", (patid,))
+	cursor.execute("UPDATE rooms SET patientid = NULL WHERE patientid = %s;", (patid,))
+	cursor.execute("UPDATE patient SET guardianid = NULL WHERE guardianid = %s;", (patid,))
+	cursor.execute("UPDATE patient SET roomno = NULL WHERE patientid = %s;", (patid,))
+	
+	connection.commit()
 
 def deletepatient(connection, patid):
-    '''
-    Deletes a patient record by ID, handling foreign key constraints.
-    
-    Args:
-        connection: mysql.connector.connect - The database connection.
-        patid (int): The unique patient ID to delete.
-    ''' 
-    cursor = connection.cursor()
+	'''
+	Deletes a patient record by ID, handling foreign key constraints.
+	
+	Args:
+		connection: mysql.connector.connect - The database connection.
+		patid (int): The unique patient ID to delete.
+	''' 
+	cursor = connection.cursor()
 
-    # Handle foreign key references first
-    deletepatientforeign(connection, patid)
-    
-    # Delete the patient record after foreign key relations have been handled
-    cursor.execute("DELETE FROM patient WHERE PatientId = %s;", (patid,))
-    
-    connection.commit()
+	# Handle foreign key references first
+	deletepatientforeign(connection, patid)
+	
+	# Delete the patient record after foreign key relations have been handled
+	cursor.execute("DELETE FROM patient WHERE PatientId = %s;", (patid,))
+	
+	connection.commit()
 
 	
 def deleteguardian(connection, guid):
