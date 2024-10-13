@@ -5,42 +5,49 @@ from os import system
 from time import sleep
 
 def install_and_import(package):
-    try:
-        # Try to import the package
-        importlib.import_module(package)
-    except ImportError:
-        # If package is not installed, install it
-        print(f"'{package}' not found. Installing...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-        print(f"'{package}' has been installed.")
-        sleep(3)
-        system('cls')
+	'''attempts to install and import modules and external libraries that are inserted as an argument
+
+	Args:
+		package (string): name of the package to be verified and installed
+	'''		
+	try:
+		# Try to import the package
+		importlib.import_module(package)
+	except ImportError:
+		# If package is not installed, install it
+		print(f"'{package}' not found. Installing...")
+		subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+		print(f"'{package}' has been installed.")
+		sleep(3)
+		system('cls')
 
 def installAllRequiredPackages():
-    packages = ["PrettyTable", "keyboard", "mysql-connector-python"]
-    for package in packages:
-        install_and_import(package)
-    print("All required packages have been installed. The program will soft-restart now.")
-    sleep(3)
-    system('cls')
+	'''_summary_
+	'''
+	packages = ["PrettyTable", "keyboard", "mysql-connector-python"]
+	for package in packages:
+		install_and_import(package)
+	print("All required packages have been installed. The program will soft-restart now.")
+	sleep(3)
+	system('cls')
 
 def InitExternalModules():
-    system('cls')
-    print("Verifying package installation")
-    sleep(2)
-    try:
-        global mysql
-        global keyboard
-        global PrettyTable
-        import mysql.connector    
-        import keyboard
-        from prettytable import PrettyTable
-        system('cls')
-        print("Initialising the program")
-        sleep(2)
-    except ImportError:
-        installAllRequiredPackages()
-        InitExternalModules()
+	system('cls')
+	print("Verifying package installation")
+	sleep(2)
+	try:
+		global mysql
+		global keyboard
+		global PrettyTable
+		import mysql.connector    
+		import keyboard
+		from prettytable import PrettyTable
+		system('cls')
+		print("Initialising the program")
+		sleep(2)
+	except ImportError:
+		installAllRequiredPackages()
+		InitExternalModules()
 
 def create_connection():
 	"""This function is used for creating a connection to the MySQL Server
