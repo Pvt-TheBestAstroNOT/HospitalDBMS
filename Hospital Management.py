@@ -516,20 +516,38 @@ def deletedoctor(connection, docid):
 	cursor.execute("Delete from doctor where DoctorId=%s;" % docid)
 	connection.commit()
 
-def deletepatient(connection, patid):
-	'''_summary_
+def deletepatientforeign(connection, patid):
+    cursor = connection.cursor()
 
-	Args:
-		connection: mysql.connector.connect
-		patid (integer): The Unique Identification Number of the record to be deleted
-	''' 
-	cursor=connection.cursor()
-	cursor.execute("Delete from appointments where PatientId=%s;" % patid)
-	cursor.execute("UPDATE payments SET patientid = NULL WHERE PatientId=%s;" % patid)
-	cursor.execute("UPDATE guardian SET patientid = NULL WHERE PatientId=%s;" % patid)
-	cursor.execute("Delete from rooms where PatientId=%s;" % patid)
-	cursor.execute("Delete from patient where PatientId=%s;" % patid)
-	connection.commit()
+    # Delete appointments associated with the patient
+    cursor.execute("DELETE FROM appointments WHERE PatientId = %s;", (patid,))
+
+    # Set foreign keys to NULL where the patient ID is used
+    cursor.execute("UPDATE payments SET patientid = NULL WHERE patientid = %s;", (patid,))
+    cursor.execute("UPDATE rooms SET patientid = NULL WHERE patientid = %s;", (patid,))
+    cursor.execute("UPDATE patient SET guardianid = NULL WHERE guardianid = %s;", (patid,))
+    cursor.execute("UPDATE patient SET roomno = NULL WHERE patientid = %s;", (patid,))
+    
+    connection.commit()
+
+def deletepatient(connection, patid):
+    '''
+    Deletes a patient record by ID, handling foreign key constraints.
+    
+    Args:
+        connection: mysql.connector.connect - The database connection.
+        patid (int): The unique patient ID to delete.
+    ''' 
+    cursor = connection.cursor()
+
+    # Handle foreign key references first
+    deletepatientforeign(connection, patid)
+    
+    # Delete the patient record after foreign key relations have been handled
+    cursor.execute("DELETE FROM patient WHERE PatientId = %s;", (patid,))
+    
+    connection.commit()
+
 	
 def deleteguardian(connection, guid):
 	'''This function is used to delete the records of a guardian. It takes the mysql connection and guardian id as arguments.
@@ -733,6 +751,7 @@ while True:
 			if password=='admin':
 				tempblockenter()
 				while True:
+					tempblockenter()
 					match create_menu(["Delete a Patient Record","Delete A Guardian Record", "Delete a Doctor Record", "Edit a Doctor Record", "LogOut"]):
 						case 1:
 							patientid=integer_input("Enter patient ID to delete: ")
@@ -757,8 +776,7 @@ while True:
 								print("The doctorid specified does not exist. please check the credentials and try again.")
 								sleep(3)
 								continue
-							else:
-								deletedoctor(connection,doctorid)
+							deletedoctor(connection,doctorid)
 						case 4:
 							doctorid=integer_input("Enter doctor ID to edit: ")
 							record=retrieve_patient_record(connection, doctorid)
