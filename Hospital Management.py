@@ -465,12 +465,13 @@ def float_input(msg):
 
 	'''   
 	blockalpha()
-	keyboard.unblock_key(".")
 	while True:
 		inp=input(msg)
 		if inp.isdecimal():
 			inp=float(inp)
 			break
+		elif inp.isdigit():
+			inp=float(inp)
 		else:
 			print("The text you entered is not a digit")
 	unblockalpha()
@@ -565,7 +566,7 @@ def deleteguardian(connection, guid):
 
 	'''    ''''''
 	cursor=connection.cursor()
-	cursor.execute("UPDATE patient SET patientid = NULL WHERE GuardianId=%s;" % guid)
+	cursor.execute("UPDATE patient SET GuardianId = NULL WHERE GuardianId=%s;" % guid)
 	cursor.execute("Delete from guardian where GuardianId=%s;" % guid)
 	connection.commit()
 
@@ -791,6 +792,7 @@ while True:
 								print("The doctorid specified does not exist please try again")
 								sleep(3)
 								continue
+							tempblockenter()
 							match create_menu(["Designation","Salary","Bonus","Department", "Cancel"],"Select an option to edit:"):
 								case 1:
 									update_doctor(connection,"Designation",doctorid,"text")
