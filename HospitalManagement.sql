@@ -1,3 +1,15 @@
+--                         XX DEVELOPER NOTES XX 
+-- This is a self contained MySQL database schema that acts as the server side of the HospitalManagement program.
+-- To use this schema, simply open mysql Workbench, an out-of-the-box program that comes bundled with the MySQL installer.
+-- click on the import button found iN the admistrative section and choose this file.
+
+-- alternatively, you can copy all this code and paste it in the MySQL shell to (HOPEFULLY!) get similar results.
+-- enjoy!
+--          SCHEMA BY ANIRUDH SHARMA AND MOHAMMED WASIM HYDER RAZA
+--                         XX DEVELOPER NOTES END XX 
+
+
+
 -- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
 --
 -- Host: localhost    Database: hospitalmanagement
