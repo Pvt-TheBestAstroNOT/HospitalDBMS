@@ -782,7 +782,7 @@ while True:
         "\n" "Welcome to the Hospital Database Management system!(HDMS!)" "\n"
         "HDMS! is a staff-operated program for ease of access in storing and retrieving data from a MySQL server. " "\n"
         "This program is simple and easy to use, along with the fact that this is a CLI-based program, \n makes it fast and versatile for it's functionality" "\n"
-        "created by: Wasim Raza and Anirudh Sharma" "\n"
+        "Created by: Wasim Raza and Anirudh Sharma" "\n"
         "\n \n" "Use the Up and Down arrow keys to navigate the menu and enter key to select an option:" "\n"
         "*************************************************************************************************************************"
     ):
