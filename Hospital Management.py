@@ -115,7 +115,7 @@ def insert_doctor(connection):
     )
     if password == -1:
         return -1
-    query = "INSERT INTO doctor (Designation, Salary, Bonus, DoctorName, DOJ, Password) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    query = "INSERT INTO doctor (Designation, Salary, Bonus, DoctorName, DOJ, Password) VALUES (%s, %s, %s, %s, %s, %s)"
     cursor.execute(query, (designation, salary, bonus, doctor_name, doj, password))
     connection.commit()
     print("Doctor data inserted successfully.")
@@ -977,13 +977,13 @@ while True:
                         records = retrieve_doctor_appointments(connection, doctorid)
                         table = PrettyTable()
                         table.field_names = [
+                            "Appointment ID",
                             "Doctor ID",
                             "Patient ID",
                             "Report Of Patient",
                             "PaymentID",
                             "Date",
-                            "Time",
-                            "Appointment ID",
+                            "Time"
                         ]
                         for item in records:
                             table.add_row(item)
