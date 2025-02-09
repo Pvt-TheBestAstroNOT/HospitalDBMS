@@ -39,7 +39,7 @@ CREATE TABLE `appointments` (
   CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`PatientId`) REFERENCES `patient` (`PatientId`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`DoctorId`) REFERENCES `doctor` (`DoctorId`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `appointments_ibfk_3` FOREIGN KEY (`PaymentId`) REFERENCES `payments` (`PaymentId`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -48,7 +48,7 @@ CREATE TABLE `appointments` (
 
 LOCK TABLES `appointments` WRITE;
 /*!40000 ALTER TABLE `appointments` DISABLE KEYS */;
-INSERT INTO `appointments` VALUES (11,1,1,'Routine Checkup',3,'2024-09-10','10:00:00'),(12,2,1,'Follow-up Visit',3,'2024-09-15','14:00:00'),(13,1,1,'Lab Test Review',3,'2024-09-20','11:00:00'),(14,3,2,'Dental Cleaning',4,'2024-09-11','09:30:00'),(15,4,3,'Eye Examination',5,'2024-09-12','13:00:00'),(16,2,3,'Follow-up Eye Exam',5,'2024-09-18','13:30:00'),(17,1,4,'Blood Pressure Check',6,'2024-09-14','10:30:00'),(18,2,5,'Annual Physical',7,'2024-09-19','12:00:00'),(20,3,6,'Cardiac Consultation',1,'2024-09-22','09:00:00'),(21,1,1,'Lymphocarcoma of the intestines',1,'2021-09-12','00:00:00'),(22,1,1,'Lymphocarcoma of the intestines, again',1,'2024-12-13','10:56:00');
+INSERT INTO `appointments` VALUES (1,1,1,'Routine Checkup',3,'2024-09-10','10:00:00'),(2,2,1,'Follow-up Visit',3,'2024-09-15','14:00:00'),(3,1,1,'Lab Test Review',3,'2024-09-20','11:00:00'),(4,3,2,'Dental Cleaning',4,'2024-09-11','09:30:00'),(5,4,3,'Eye Examination',5,'2024-09-12','13:00:00'),(6,2,3,'Follow-up Eye Exam',5,'2024-09-18','13:30:00'),(7,1,4,'Blood Pressure Check',6,'2024-09-14','10:30:00'),(8,2,5,'Annual Physical',7,'2024-09-19','12:00:00'),(9,2,7,'Insurance Claim',2,'2021-10-05','10:11:00'),(10,3,6,'Cardiac Consultation',1,'2024-09-22','09:00:00'),(11,1,1,'Lymphocarcoma of the intestines',1,'2021-09-12','00:00:00'),(12,1,1,'Lymphocarcoma of the intestines, again',1,'2024-12-13','10:56:00'),(13,5,8,'bouts of Epilepsy',1,'2024-12-09','07:45:00'),(24,5,7,'Monthly Check-up',3,'2024-10-15','02:25:00');
 /*!40000 ALTER TABLE `appointments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -69,7 +69,7 @@ CREATE TABLE `doctor` (
   `DOJ` date DEFAULT NULL,
   `Password` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`DoctorId`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -78,7 +78,7 @@ CREATE TABLE `doctor` (
 
 LOCK TABLES `doctor` WRITE;
 /*!40000 ALTER TABLE `doctor` DISABLE KEYS */;
-INSERT INTO `doctor` VALUES (1,'General Practitioner',1.00,'Internal Medicine',5000.00,'Priya Saxena',NULL,'helloworld'),(2,'Cardiologist',120000.00,'Cardiology',10000.00,'Joy Negi',NULL,NULL),(3,'DummyValue',0.00,NULL,0.00,'Anirudh Sharma','2024-01-31','helloworld'),(4,'Wasim Raza',4000000.00,'Head Surgeon',100000.00,'Wasim Raza','2007-10-17','WasimTheGreat'),(5,'Cardiologist',150000.00,'Cardiology',20000.00,'Dr. Arjun Reddy','2017-05-20','password1'),(6,'Neurologist',160000.00,'Neurology',25000.00,'Dr. Priya Patel','2016-07-18','password2'),(7,'Orthopedic',140000.00,'Orthopedics',18000.00,'Dr. Rajesh Kumar','2018-10-10','password3'),(8,'Pediatrician',130000.00,'Pediatrics',15000.00,'Dr. Meera Singh','2019-12-05','password4');
+INSERT INTO `doctor` VALUES (1,'oncology',1.00,'Internal Medicine',5000.00,'Resigned',NULL,'helloworld'),(2,'Cardiologist',120000.00,'Cardiology',10000.00,'Joy Negi',NULL,NULL),(3,'DummyValue',0.00,NULL,0.00,'Anirudh Sharma','2024-01-31','helloworld'),(4,'Wasim Raza',4000000.00,'Head Surgeon',100000.00,'Wasim Raza','2007-10-17','WasimTheGreat'),(5,'Cardiologist',10000.00,'Cardiology',20000.00,'Dr. Arjun Reddy','2017-05-20','password1'),(6,'Neurologist',160000.00,'Neurology',25000.00,'Dr. Priya Patel','2016-07-18','password2'),(7,'Orthopedic',140000.00,'Orthopedics',18000.00,'Dr. Rajesh Kumar','2018-10-10','password3'),(8,'Pediatrician',130000.00,'Pediatrics',15000.00,'Dr. Meera Singh','2019-12-05','password4'),(9,'Oncologist',0.00,NULL,0.00,'Narayan Sunak','2025-01-29','1234567890');
 /*!40000 ALTER TABLE `doctor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -105,7 +105,7 @@ CREATE TABLE `guardian` (
 
 LOCK TABLES `guardian` WRITE;
 /*!40000 ALTER TABLE `guardian` DISABLE KEYS */;
-INSERT INTO `guardian` VALUES (1,'Deepika Negi',904897484,'deepikanegithebest@gmail.com','somewhere somewhre somewhere, vasant vihar, new delhi'),(2,'Kishore Kumar Yadav',409335465,'kkyadav81@hotmail.com','Lodhi Roah, Delhi'),(4,'Sana Sheikh',8765432109,'sanasheikh@gmail.com','456 Street Name, City, State'),(5,'Vinod Mehta',7654321098,'vinodmehta@gmail.com','789 Street Name, City, State'),(6,'Lakshmi Menon',6543210987,'lakshmimenon@gmail.com','101 Street Name, City, State'),(7,'Aamir Hussain',5432109876,'aamirhussain@gmail.com','202 Street Name, City, State');
+INSERT INTO `guardian` VALUES (1,'Deepika Negi',904897484,'deepikanegithebest@gmail.com','somewhere somewhre somewhere, vasant vihar, new delhi'),(2,'Kishore Kumar Yadav',409335465,'kkyadav81@hotmail.com','Lodhi Roah, Delhi'),(3,'Kashaf Baig',9334052149,'kbaiggulazar@gmail.com','Gulzar COlony, Zindagi Nagar, ballimaharan, New Del'),(4,'Sana Sheikh',8765432109,'sanasheikh@gmail.com','456 Street Name, City, State'),(5,'Vinod Mehta',7654321098,'vinodmehta@gmail.com','789 Street Name, City, State'),(6,'Lakshmi Iyer',6543210987,'lakshmimenon@gmail.com','101 Street Name, City, State'),(7,'Aamir Hussain',5432109876,'aamirhussain@gmail.com','202 Street Name, City, State');
 /*!40000 ALTER TABLE `guardian` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -541,7 +541,7 @@ CREATE TABLE `patient` (
   PRIMARY KEY (`PatientId`),
   KEY `fk_guardian` (`GuardianId`),
   CONSTRAINT `fk_guardian` FOREIGN KEY (`GuardianId`) REFERENCES `patient` (`PatientId`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -550,7 +550,7 @@ CREATE TABLE `patient` (
 
 LOCK TABLES `patient` WRITE;
 /*!40000 ALTER TABLE `patient` DISABLE KEYS */;
-INSERT INTO `patient` VALUES (1,1,'12345678','1','1990-05-15',70.50,170.00,NULL,'helloworld','Joy Negi'),(2,1,'9876543210','456 Elm St, Town','1985-08-20',85.20,175.00,101,'helloworld','Negi Joy'),(3,1,'9123456789','789 Street Name, City, State','1990-02-15',75.50,175.00,101,'pass1','Ankit Kumar'),(4,2,'9987654321','234 Street Name, City, State','1985-08-21',68.00,165.00,102,'pass2','Meera Khan'),(5,NULL,'9876543212','345 Street Name, City, State','1995-12-30',82.00,180.00,103,'pass3','Rajesh Verma'),(6,4,'9765432101','456 Street Name, City, State','2000-05-12',60.00,160.00,104,'pass4','Nisha Iyer'),(7,5,'9654321098','567 Street Name, City, State','1988-11-05',70.00,170.00,105,'pass5','Ayaan Sheikh');
+INSERT INTO `patient` VALUES (1,1,'12345678','1','1990-05-15',70.50,170.00,NULL,'helloworld','Joy Negi'),(2,1,'9876543210','456 Elm St, Town','1985-08-20',85.20,175.00,101,'helloworld','Negi Joy'),(3,2,'9123456789','789 Street Name, City, State','1990-02-15',75.50,175.00,101,'pass1','Ankit Kumar'),(4,7,'9987654321','234 Street Name, City, State','1985-08-21',68.00,165.00,102,'pass2','Meera Khan'),(5,NULL,'9876543212','345 Street Name, City, State','1995-12-30',82.00,180.00,103,'pass3','Rajesh Verma'),(6,6,'9765432101','456 Street Name, City, State','2000-05-12',60.00,160.00,104,'pass4','Nisha Iyer'),(7,5,'9654321098','567 Street Name, City, State','1988-11-05',70.00,170.00,105,'pass5','Ayaan Sheikh'),(8,NULL,'9520578952','122,Chapre wala mohalla, Nakhas,Lucknow','2011-10-21',75.65,189.00,NULL,'8888','Testificate'),(9,3,'1','1','2024-10-12',59.00,169.00,NULL,'1234567890','Waris Baig'),(10,1,'1','1','2021-05-13',59.00,175.00,NULL,'1234567890','Anirudh Mehta'),(11,3,'Narayan Sunak','2','1986-06-26',79.00,189.00,NULL,'1234567890','Kanupriya Sharma');
 /*!40000 ALTER TABLE `patient` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -4008,4 +4008,4 @@ SET character_set_client = @saved_cs_client;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-11-05 23:04:19
+-- Dump completed on 2025-02-09 20:25:04
